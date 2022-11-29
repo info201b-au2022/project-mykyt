@@ -1,7 +1,5 @@
 ---
-title: "Your Project Title"
-author: "project team members"
-date: "1/22/2022"
+title: "Exploratory Analysis"
 output: html_document
 ---
 
@@ -9,46 +7,59 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## What is this file for?
-
-* This file will eventually become your project report for **P02: Exploratory Data Analysis**. Specifically, you will write rmarkdown to report your exploratory data analysis.
-
-* Please see Canvas for more details.
-
-## ACCESSING THE /source DIRECTORY
-### Example 1: Source some code and run a function
-```{r}
-# Example 1: Note relative path, which can be read: Up one
-# directory(..), down into source (/source), and 
-# then "source" an R file (data_access.R)
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
 source("../source/data_access.R")
-data_access_test()
+source("../source/summary_information.R")
+source("../source/table.R")
+source("../source/chart1.R")
+source("../source/chart2.R")
+source("../source/chart3.R")
+
 ```
 
-### Example 2: Initialize a variable and then use it
-```{r}
-# Example 1: This function was "sourced" above
-msg <- data_access_test(" Morgan!")
+```{r, echo=FALSE, message = F, include=FALSE}
+info_list <- get_summary_info(get_data_homelessness_2007_2016(), get_data_homelessness_2020())
+info_list$total_homeless_2020
+info_list$total_homeless_2007
+info_list$most_state_overall
+info_list$most_state_overall_percentage
+diff <- info_list$total_homeless_2007 - info_list$total_homeless_2020
+```
+## The homelessness crisis in U.S. (2007-2020)
+## Summary Paragraph
+The dataset consists of extensive and specific data such as the overall homeless population, number of sheltered and unsheltered homeless, sex, gender, age, and race of homeless people by state. The data includes information from 2007 to 2021. The year 2020 was chosen as the sample to calculate the summary information since it is the most recent and accurate. After the Great Recession in 2007, the overall homeless count was `r info_list$total_homeless_2007`. In 2020, the total count was `r info_list$total_homeless_2020`, which indicates a decrease of `r round((diff / info_list$total_homeless_2007) * 100)`% in 13 years. The state which has the most homeless people and gets affected by the problem the most is `r as.character(state.name[grep(info_list$most_state_overall, state.abb)])`. It contains `r round(info_list$most_state_overall_percentage)`% homeless out of the overall count of people across the U.S.
+
+## Summary Table
+This table shows the aggregate number of overall homeless people occurred by state and the percentage of proportion relative to the total number of homeless across the country in the year of 2020. This table is arranged by decreasing number of the total count of homeless people by state. Also, the table shows decrease and increase of homeless people in 13 years by state. This information is displayed to show which states have the most homeless people and get affected by the problem the most. 
+```{r, echo=FALSE, message = F, warning=F}
+df <- get_table()
+knitr::kable(df)
 ```
 
-> `r msg` Hope you have a good day!! 
-
-## ABOUT THIS FILE: 
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+## Chart 1 
+```{r, echo=FALSE, message = F, warning=F}
+plot_homelessness_2020()
 ```
 
-## Including Plots
+Homelessness is a complex issue, and no single piece of data can effectively tell the entire story of homelessness and the greater need for housing in the United States. By using correct data, people and communities can engage in a collaborative decision-making process while addressing more comprehensive needs, gaps in funding, and existing resources.
 
-You can also embed plots, for example:
+The graph addresses the issue by visualizing the total count of homeless people by the state in the United States.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+## Chart 2
+```{r, echo=FALSE, message = F, warning=F}
+plot_homelessness_2020_total()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Race is a significant predictor of homelessness. As with so many other areas of American life, historically marginalized groups are more likely to be disadvantaged in housing and homelessness. Higher unemployment rates, lower incomes, less access to healthcare, and higher incarceration rates are likely contributing to higher rates of homelessness among people of color.
+
+This chart indicates that numerically white people are the largest racial group within homelessness, accounting for more than a quarter-million people. However, historically marginalized racial and ethnic groups are often far more likely to experience homelessness. The reasons for the disparities are many and varied but tend to fall under the umbrella of racism and caste. 
+
+## Chart 3
+```{r, echo=FALSE, message = F, warning=F}
+plot_homelessness_data()
+```
+
+
+One of the most common ways to measure homelessness is by counting people sleeping in shelters or on the streets. The graph represents figures intended to reflect the number of people who are homeless ‘on any given night.
+
+In these figures, ‘Sheltered Homelessness’ refers to people who are staying in emergency shelters, transitional housing programs, or safe havens. ‘Unsheltered Homelessness,’ on the other hand, refers to people whose primary nighttime residence is a public or private place not designated for, or ordinarily used as, regular sleeping accommodation for people – for example, the streets, vehicles, or parks.

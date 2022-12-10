@@ -1,0 +1,48 @@
+body {
+  max-width: 100% !important;
+  margin: 0 !important;  
+  padding: 0 !important; 
+  line-height: 20px; 
+   font-size: initial !important;
+}
+
+body, td {
+ font-size: initial !important;
+}
+.intro_main_panel {
+  width: 100%;
+}
+
+.main_title {
+  font-weight: 700;
+}
+
+.h2_title {
+  font-weight: 500;
+}
+
+.intro_title {
+  text-align: center;
+}
+
+.intro_question_title {
+  font-weight: 500;
+}
+
+.intro_img {
+  max-height: 250px;
+  max-width: 350px;
+  width: 45%;
+  height: 33%;
+  border-radius: 10px;
+}
+
+.intro_img1 {
+    margin-left: 30px;
+}
+
+.intro_img2 {
+  margin-right: 30px;
+  padding-bottom: 30px;
+}
+

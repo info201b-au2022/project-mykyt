@@ -1,43 +1,51 @@
 library("tidyverse")
-
-source("../source/data_access.R")
-
-#----------------------------------------------------------------------------#
-# Loaded data
-#----------------------------------------------------------------------------#
-homelessness_2020 <-  get_data_homelessness_2020()
+library("leaflet")
+library("sf")
 
 ## Chart 1  ---- 
 #----------------------------------------------------------------------------#
-# Number of Homeless People by State
+# Number of Homeless People by State (Updated using leaflet)
 #----------------------------------------------------------------------------#
+plot_map <- function(df) {
+states <- read_sf("./cb_2018_us_state_500k/cb_2018_us_state_500k.shp")
+states <- subset(states, is.element(states$NAME, df$State))
+df<- df[order(match(df$State, states$NAME)), ]
 
-homelessness_2020_filtered <- homelessness_2020 %>%
-  select(State, Overall.Homeless..2020) %>%
-  filter(State %in% state.abb) %>%
-  rename("state" = "State") %>%
-  mutate(Overall.Homeless..2020 = as.integer(gsub(",", "", Overall.Homeless..2020))) %>%
-  rowwise() %>%
-  mutate(state = as.character(list(tolower(state.name[grep(state, state.abb)])))) 
+labels <- paste("<p>", "<strong>", df$State,"</strong>", "</p>",
+                "<p>", "Total homeless count: ", "<strong>", df$Overall.Homeless..2020,"</strong>", "</p>",
+                "<p>", "Total homeless as %: ", "<strong>", df$`Total Homeless as %`,"%", "</strong>", "</p>",
+                "<p>", "Increase / decrease in 14 years: ", "<strong>", df$`Increase / Decrease from 2007`,"</strong>", "</p>") %>% 
+  lapply(htmltools::HTML)
 
-state_shape <- map_data("state") %>% 
-  rename(state = region) %>% 
-  select(-subregion) %>%
-  left_join(homelessness_2020_filtered, by="state") 
+m <- leaflet(states) %>%
+  setView(-96, 37.8, 4) %>%
+  addProviderTiles(providers$Stamen.Toner)
+  
 
-plot_homelessness_2020 <- function() {
-  homelessness_2020_map_chart <- ggplot(state_shape) +
-    geom_polygon(
-      mapping = aes(x = long, y = lat, group = group, fill = Overall.Homeless..2020),
-    ) +
-    coord_map() +
-    borders("state", colour = "#FFFFFF", size = 0.1) +
-    scale_fill_continuous(low = "#B9D9EB", high = "#0047AB") +
-    labs(
-      title = "Homeless Population by State(2020)",
-      fill = "Total homeless count"
-    ) + 
-    theme_dark()
-  return (homelessness_2020_map_chart)
+bins <- c(500,2000, 3000,4000,5000, 9000, 15000, 20000, 30000, 95000, 165000)
+pal <- colorBin("YlGnBu", domain = df$Overall.Homeless..2020, bins = bins)
+
+m %>% addPolygons(
+  fillColor = ~pal(df$Overall.Homeless..2020),
+  weight = 2,
+  opacity = 1,
+  color = "white",
+  dashArray = "3",
+  fillOpacity = 0.7,
+  highlightOptions = highlightOptions(
+    weight = 3,
+    color = "#666",
+    dashArray = "",
+    fillOpacity = 0.7,
+    bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+    style = list(padding = "4px"),
+    textsize = "12px",
+    direction = "auto"),
+  ) %>%
+  addLegend(pal = pal, values = df$Overall.Homeless..2020, opacity = 0.7, title = NULL,
+            position = "bottomright")
 }
 
+plot_map(homeless_map)

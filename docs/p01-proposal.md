@@ -50,6 +50,12 @@ While there is considerable controversy about the number of homeless people, the
 
 The project will deliver the analysis of how the crisis got worse in the timespan of 14 years, what age, sex, and races get affected by it the most. The goal is to raise attention to the problem and make readers to ask why does it happen and make them think how it can be reduced and prevented in the future.   
 
+## Findings
+
+## Discussions
+
+## Conclusions
+
 ## References
 PIT and HIC Data Since 2007. Available at: https://www.hudexchange.info/resource/3031/pit-and-hic-data-since-2007/(Published: February 2022).
 

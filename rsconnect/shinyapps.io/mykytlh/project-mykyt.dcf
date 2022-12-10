@@ -1,0 +1,14 @@
+name: project-mykyt
+title: project-mykyt
+username:
+account: mykytlh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7854972
+bundleId: 6619636
+url: https://mykytlh.shinyapps.io/project-mykyt/
+when: 1670664268.10611
+lastSyncTime: 1670664268.10612
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: docs/hello.html|docs/index.html|docs/index.Rmd|docs/README.md|instructions/p01-proposal-requirements.md|instructions/project-design-brief.pdf|instructions/README.md|LICENSE|p01-proposal.txt|README.md

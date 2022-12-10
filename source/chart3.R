@@ -1,32 +1,26 @@
 library("tidyverse")
+library("plotly")
 
-source("../source/data_access.R")
-
-#----------------------------------------------------------------------------#
-# Loaded data
-#----------------------------------------------------------------------------#
-homelessness_data <-  get_data_homelessness_2007_2016()
 
 ## Chart 3  ---- 
 #----------------------------------------------------------------------------#
 # Number of Homeless People by State
 #----------------------------------------------------------------------------#
 
-homelessness_data_filtered  <- homelessness_data %>%
-  select(Year, Sheltered.Homeless..HUD..2016.., Unsheltered.Homeless..HUD..2016..) %>%
-  rename("Sheltered homeless" = Sheltered.Homeless..HUD..2016.., "Unsheltered homeless" = Unsheltered.Homeless..HUD..2016..) %>%
-  rowwise() %>% 
-  ungroup() %>%
-  pivot_longer(!Year)
 
-plot_homelessness_data <- function() {
-  homelessness_data_chart <- ggplot(homelessness_data_filtered) +
-    geom_area(mapping = aes(x = Year, y=value, fill = name)) +
+plot_homelessness_data <- function(df, input_type, year) {
+  dummy <- "Sheltered and unsheltered homeless"
+  
+  total_data <- df %>%
+    filter(type == input_type | input_type == dummy) %>%
+    filter(Year >= min(year) &  Year <= max(year))
+  
+  homelessness_data_chart <- ggplot(total_data) +
+    geom_area(mapping = aes(x = Year, y= total, fill = type)) +
     scale_y_continuous(labels = scales::comma) +
-    scale_fill_brewer() + 
+    scale_fill_brewer(palette = "Blues") + 
     labs (
-      title = "Total Number Of Homeless People,
-United States, from 2007 to 2016",
+      title = "Total Number Of Homeless People, United States, from 2007 to 2016",
       x = "Year", 
       y = "Total",
       caption = "This graph shows people experiencing homelessness in the USA, by shelter status.
@@ -35,7 +29,7 @@ United States, from 2007 to 2016",
     ) + 
     theme_dark()
   
-  return(homelessness_data_chart) 
+  ggplotly(homelessness_data_chart)
 }
 
 
